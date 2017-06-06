@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/AndroidInterview.iml" filepath="$PROJECT_DIR$/AndroidInterview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ImageLoader/ImageLoader.iml" filepath="$PROJECT_DIR$/ImageLoader/ImageLoader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/IntentServiceDemo/IntentServiceDemo.iml" filepath="$PROJECT_DIR$/IntentServiceDemo/IntentServiceDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ListviewDemo/ListviewDemo.iml" filepath="$PROJECT_DIR$/ListviewDemo/ListviewDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MemLeakDemo/MemLeakDemo.iml" filepath="$PROJECT_DIR$/MemLeakDemo/MemLeakDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NetFrameWorkDemo/NetFrameWorkDemo.iml" filepath="$PROJECT_DIR$/NetFrameWorkDemo/NetFrameWorkDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PluginDemo/PluginDemo.iml" filepath="$PROJECT_DIR$/PluginDemo/PluginDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/安卓基础相关面试/安卓基础相关面试.iml" filepath="$PROJECT_DIR$/安卓基础相关面试/安卓基础相关面试.iml" />
+    </modules>
+  </component>
+</project>
