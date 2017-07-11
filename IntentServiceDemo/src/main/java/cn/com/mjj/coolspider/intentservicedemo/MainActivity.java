@@ -7,8 +7,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements MyIntentService.UpdateUI {
+public class MainActivity extends AppCompatActivity{
 
     /**
      * 图片地址集合
@@ -36,18 +37,28 @@ public class MainActivity extends AppCompatActivity implements MyIntentService.U
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         imageView = (ImageView) findViewById(R.id.image);
+        MyIntentService.setDownLoadListener(new MyIntentService.DownLoadListener() {
+            @Override
+            public void onDownLoadStart(int index) {
+                Toast.makeText(MainActivity.this, "第"+index+"张开始下载", Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onDownLoadProgress(int index) {
+
+            }
+
+            @Override
+            public void onDownLoadFinished(int index, Bitmap bitmap) {
+                Toast.makeText(MainActivity.this, "第"+index+"张下载完成", Toast.LENGTH_SHORT).show();
+                imageView.setImageBitmap(bitmap);
+            }
+        });
         Intent intent = new Intent(this, MyIntentService.class);
         for (int i = 0; i < 7; i++) {
             intent.putExtra(MyIntentService.DOWNLOAD_URL, url[i]);
             intent.putExtra(MyIntentService.INDEX_FLAG, i);
             startService(intent);
         }
-        MyIntentService.setUpdateUI(this);
-    }
-
-    @Override
-    public void updateUI(Message message) {
-        mUIHandler.sendMessageDelayed(message, message.what * 1000);
     }
 }

@@ -4,8 +4,9 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
+import android.os.Looper;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -13,17 +14,19 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by Mjj on 2017/4/23.
+ * author: sundong
+ * created at 2017/7/11 10:39
  */
 
 public class MyIntentService extends IntentService {
     public static final String DOWNLOAD_URL = "download_url";
     public static final String INDEX_FLAG = "index_flag";
-    public static UpdateUI updateUI;
+    public Handler dispatcher = new Handler(Looper.getMainLooper());
+    public static DownLoadListener downLoadListener;
 
 
-    public static void setUpdateUI(UpdateUI updateUIInterface) {
-        updateUI = updateUIInterface;
+    public static void setDownLoadListener(DownLoadListener mDownLoadListener) {
+        downLoadListener = mDownLoadListener;
     }
 
     public MyIntentService() {
@@ -38,12 +41,10 @@ public class MyIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        Bitmap bitmap = downloadUrlBitmap(intent.getStringExtra(DOWNLOAD_URL));
-        Message msg1 = new Message();
-        msg1.what = intent.getIntExtra(INDEX_FLAG, 0);
-        msg1.obj = bitmap;
-        if (updateUI != null) {
-            updateUI.updateUI(msg1);
+        try {
+            final Bitmap bitmap = downloadUrlBitmap(intent.getIntExtra(INDEX_FLAG, 0), intent.getStringExtra(DOWNLOAD_URL), downLoadListener);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
     }
@@ -74,16 +75,19 @@ public class MyIntentService extends IntentService {
         return super.onBind(intent);
     }
 
-
-    public interface UpdateUI {
-        void updateUI(Message message);
-    }
-
-
-    private Bitmap downloadUrlBitmap(String urlString) {
+    private Bitmap downloadUrlBitmap(final int index, String urlString, final DownLoadListener downLoadListener) throws InterruptedException {
         HttpURLConnection urlConnection = null;
         BufferedInputStream in = null;
         Bitmap bitmap = null;
+        dispatcher.post(new Runnable() {
+            @Override
+            public void run() {
+                if (downLoadListener != null) {
+                    downLoadListener.onDownLoadStart(index);
+                }
+            }
+        });
+        Thread.sleep(2000);
         try {
             final URL url = new URL(urlString);
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -103,6 +107,24 @@ public class MyIntentService extends IntentService {
                 e.printStackTrace();
             }
         }
+        Thread.sleep(2000);
+        final Bitmap finalBitmap = bitmap;
+        dispatcher.post(new Runnable() {
+            @Override
+            public void run() {
+                if (downLoadListener != null) {
+                    downLoadListener.onDownLoadFinished(index, finalBitmap);
+                }
+            }
+        });
         return bitmap;
+    }
+
+    public interface DownLoadListener {
+        void onDownLoadStart(int index);
+
+        void onDownLoadProgress(int index);
+
+        void onDownLoadFinished(int index, Bitmap bitmap);
     }
 }
